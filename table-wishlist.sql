@@ -37,4 +37,51 @@ alter table wishlist
 add constraint fk_wishlist_product foreign key (id_product) references products(id)
 on delete cascade on update cascade;
 
+-- menampilkan semua data pada tabel wishlist pada column id_product(foreign key) yang berelasi pada tabel products
+-- pada column id (primary key) dengan join table
+select * from wishlist join products on wishlist.id_product = products.id
 
+-- menampilkan data description pada tabel wishlist pada column id_product(foreign key) yang berelasi 
+-- pada tabel products dengan menampilkan data id dan name pada column id (primary key) dengan join table
+select products.id, products.name, wishlist.description 
+from wishlist join products 
+on wishlist.id_product = products.id
+
+-- menampilkan data dengan mempersingkat nama tabel dengan alias description pada tabel wishlist as w pada 
+-- column id_product(foreign key) yang berelasi pada tabel products as p dengan menampilkan data id dan name 
+-- pada column id (primary key) dengan join table
+select p.id, p.name, w.description 
+from wishlist as w join products as p
+on w.id_product = p.id
+
+-- menambahkan column id_customer dengan tipe data int pada tabel wishlist
+alter table wishlist add column id_customer int
+
+-- membuat column id_customer pada tabel wishlist sebagai foreign key dan berelasi 
+-- ke tabel customer pada column id(primary key)
+alter table wishlist add constraint fk_wishlist_customer foreign key (id_customer) references customer(id)
+
+-- merubah/menambahkan pada column id_customer menjadi nilainya 1, pada column id yang memiliki nilai 2 dan 3
+-- pada tabel wishlist
+update wishlist set id_customer = 1 where id in (2,3)
+
+-- merubah/menambahkan pada column id_customer menjadi nilainya 4, pada column id yang memiliki nilai 4
+-- pada tabel wishlist
+update wishlist set id_customer = 4 where id in (4)
+-- atau bisa juga seperti ini
+update wishlist set id_customer = 4 where id = 4
+
+-- Join Multiple Table
+-- Menggunakan alias untuk tabel agar nama tabel lebih singkat dan mudah digunakan.
+-- Mengambil kolom 'email' dari tabel 'customer' dengan alias 'c' berdasarkan kolom 'id' (primary key) 
+-- sebagai kunci hubung.
+-- Mengambil kolom 'description' dari tabel 'wishlist' dengan alias 'w' berdasarkan kolom 'id_product' (foreign key) 
+-- yang berhubungan dengan tabel 'products' dengan alias 'p' berdasarkan kolom 'id' (primary key).
+-- Mengambil data dari kolom 'id' dan 'name' dari tabel 'products' dengan alias 'p' berdasarkan kolom 'id' (primary key).
+-- Menggunakan pernyataan JOIN untuk menghubungkan beberapa tabel berdasarkan kriteria yang sesuai.
+select c.email, p.id, p.name, w.description 
+from wishlist as w 
+	join products as p on w.id_product = p.id
+	join customer as c on c.id = w.id_customer
+	
+	

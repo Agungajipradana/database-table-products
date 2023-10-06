@@ -275,7 +275,24 @@ select * from products where name @@ to_tsquery('!bakso')
 -- mencari data dengan query operator '''' (petik satu 2 kali bukan petik dua) pada penggunaan Full-Text search
 select * from products where name @@ to_tsquery('''mie ayam''')
 
+-- menambahkan column "id_category" pada table products
+alter table products add column id_category varchar(10)
 
+-- menjadikan column "id_category" sebagai foreign key dan berelasi dengan column id pada table categories
+alter table products add constraint fk_product_category foreign key (id_category) references categories(id)
 
+-- merubah/menambahkan isi column "id_category" dimana category adalah "Makanan"
+-- maka column "id_category" berisi "C0001" pada tabel products
+update products set id_category = 'C0001' where category = 'Makanan'
+
+-- merubah/menambahkan isi column "id_category" dimana category adalah "Minuman"
+-- maka column "id_category" berisi "C0002" pada tabel products
+update products set id_category = 'C0002' where category = 'Minuman'
+
+-- menghapus column category yang berada pada table products
+alter table products drop column category
+
+-- menampilkan data pada table products dengan join pada table categories
+select * from products join categories on products.id_category = categories.id
 
 
