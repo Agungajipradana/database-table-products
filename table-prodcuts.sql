@@ -295,4 +295,21 @@ alter table products drop column category
 -- menampilkan data pada table products dengan join pada table categories
 select * from products join categories on products.id_category = categories.id
 
+insert into products(id, name, price, quantity)
+values ('X0001', 'Contoh 1', 10000, 100),
+	   ('X0002', 'Contoh 2', 10000, 100)
+	   
+-- penggunaan subquery di where clause
+-- menampilkan semua data dari table products dimana data pada column price lebih dari > rata-rata
+select * from products where price > (select avg(price) from products)
+
+-- penggunaan subquery di from
+
+-- menampilkan data pada column price yang mimiliki nilai max (Nilai tertinggi) dari tabel products
+-- dan join pada column id_category yang memiliki relasi pada column id pada tabel categoris dan harus dikasih 
+-- as (alias)
+select max (price) from (select products.price as price 
+from categories join products on products.id_category = categories.id) as contoh
+
+
 
