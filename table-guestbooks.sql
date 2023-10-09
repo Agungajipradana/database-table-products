@@ -68,3 +68,55 @@ select distinct email from customer except select distinct email from guestbooks
 --							Jadi pada hasil diatas adalah column "email" pada table "customer" dan 
 --							column "email" pada table "guestbooks" hanya menampilkan data pada tabel "customer"
 --							yang dimana data tersebut tidak ada pada tabel "guestbooks"
+
+-- transaction
+
+start transaction
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'transaction')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'transaction 2')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'transaction 3')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'transaction 4')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'transaction 5')
+
+select * from guestbooks
+
+-- pada saat melakukan "start transaction" dan memasukan data ke tabel, nanti data akan bersifat sementara
+-- dan saat melakukkan perintah "commit" data yang dimasukan bersifat permanen
+commit
+
+-- rollback
+
+start transaction
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'rollback')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'rollback 2')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'rollback 3')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'rollback 4')
+
+insert into guestbooks(email, title, content)
+values ('transaction@gmail.com', 'transaction', 'rollback 5')
+
+select * from guestbooks
+
+-- pada saat melakukan "start transaction" dan memasukan data ke tabel, nanti data akan bersifat sementara
+-- dan saat melakukkan perintah "rollback" data yang dimasukan tadi akan hilang/dihapus karna biasanya
+-- penggunaan rollback digunakan jika ada salah satu data yang gagal/bermasalah 
+
+rollback

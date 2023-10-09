@@ -311,5 +311,107 @@ select * from products where price > (select avg(price) from products)
 select max (price) from (select products.price as price 
 from categories join products on products.id_category = categories.id) as contoh
 
+select * from products
 
+-- penggunaan locking record pada tabel products
+start transaction
 
+update products set description = 'Mie ayam original enak' where id = 'P0001'
+
+-- melihat data pada tabel products yang tadi diupdate
+select * from products where id = 'P0001'
+
+-- melakukan update pada id yang sama dan data tidak akan bisa diupdate, karena id tersebut di locking
+-- yang dimana id tersebut sebelumnya sedang menunggu proses untuk di "commit" atau mau di "rollback"
+update products set quantity = 200 where id = 'P0001'
+
+-- melakukan "commit" telebih dahulu, baru update pada column quantity diatas akan diupdate
+commit
+
+-- penggunaan locking record manual pada tabel products
+start transaction
+
+-- penggunaan locking record manual harus menggunakan "for upadate" pada data yang ingin diupdate
+select * from products where id = 'P0001' for update
+
+-- melakukan update pada id yang sama dan data tidak akan bisa diupdate, karena id tersebut di locking
+-- yang dimana id tersebut sebelumnya sedang menunggu proses untuk di "commit" atau mau di "rollback"
+update products set price = 30000 where id = 'P0001'
+
+-- melakukan "rollback" telebih dahulu, baru update pada column price diatas akan diupdate
+rollback
+
+-- melihat data pada tabel products yang tadi diupdate
+select * from products where id = 'P0001'
+
+-- deadlock
+-- saat terlalu banyak melakukan proses "locking", akan ada masalah yang terjadi yaitu deadlock
+-- deadlock adalah situasi ada 2 proses yang saling menunggu satu sama lain, namun data yang ditunggu
+-- dua-duanya di lock oleh proses lainya, sehingga proses menunggunya ini tidak akan pernah selesai
+start transaction
+
+select * from products where id = 'P0001' for update
+
+select * from products where id = 'P0002' for update
+
+-- schema : sama seperti folder, dan pada postgres schema defaultnya adalah schema public
+
+-- melihat schema tempat ditaruh table saat ini
+select current_schema()
+
+-- membuat schema baru dengan nama "contoh"
+create schema contoh
+
+-- menghapus schema dengan nama "contoh"
+drop schema contoh
+
+-- pindah schema ke schema contoh
+set search_path to contoh
+
+-- pindah schema ke schema public
+set search_path to public
+
+-- jika posisi saat ini pada schema public dan ingin menampilkan data pada table products yang berada 
+-- pada schema contoh
+select * from contoh.products
+
+-- jika posisi saat ini pada schema public dan ingin menambahkan data pada table products yang berada 
+-- pada schema contoh
+insert into contoh.products(name)
+values('iphone'),
+	  ('Play Station')
+	  
+-- user management
+
+-- membuat user
+create role agung
+create role budi
+
+-- menghapus user
+drop role agung
+drop role budi
+
+-- membuat user agar dapat login
+alter role agung login password 'rahasia'
+alter role budi login password 'rahasia'
+
+-- membuat hak akses ke user
+
+-- membuat hak akses ke user "agung" agar dapat melakukan insert, update, select ke semua tables pada schema "public"
+grant insert, update, select on all tables in schema public to agung
+
+-- membuat hak akses ke user "agung" agar dapat melakukan usage, select, update ke sequence "guestbooks_id_seq" 
+grant usage, select, update on guestbooks_id_seq to agung
+
+-- membuat hak akses ke user "budi" agar dapat melakukan insert, update, select hanya ke tables customer 
+grant insert, update, select on customer to budi
+
+-- menghapus hak akses ke user
+
+-- menghapus hak akses ke user "agung"
+revoke insert, update, select on all tables in schema public from agung
+
+revoke usage, select, update on guestbooks_id_seq from agung
+
+-- menghapus hak akses ke user "budi"
+revoke insert, update, select on customer from budi
